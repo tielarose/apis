@@ -87,15 +87,16 @@ def get_event_details(id):
     event_url = data['url']
     image = data['images'][0]['url']
     start_date = date.fromisoformat(data['dates']['start']['localDate']).strftime("%B %d, %Y") 
-    classifications = [classification['genre']['name'] for classification in data['classifications']] 
+    classifications = set([classification['genre']['name'] for classification in data['classifications']])
     venues = [venue['name'] for venue in data['_embedded']['venues']] 
+    description = data.get('info','')
+    # description = 'this is a description'
 
-    return render_template('event-details.html', name=name, event_url=event_url, image=image, start_date=start_date, classifications=classifications, venues=venues)
+    return render_template('event-details.html', name=name, event_url=event_url, image=image, start_date=start_date, classifications=classifications, venues=venues, description=description)
 
 
 
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=5002)
-
 
