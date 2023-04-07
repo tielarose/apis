@@ -82,9 +82,6 @@ def get_event_details(id):
 
     res = requests.get(url, params=payload) 
     data = res.json() 
-    # data_json = data.loads(data)
-
-    print('*'*20) 
 
     name = data['name']
     event_url = data['url']
