@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request
 
-from pprint import pformat
+from pprint import pformat, pprint 
 import os
 import requests
+from datetime import date 
 
 
 app = Flask(__name__)
@@ -76,11 +77,28 @@ def find_afterparties():
 def get_event_details(id):
     """View the details of an event."""
 
-    # TODO: Finish implementing this view function
+    url = f'https://app.ticketmaster.com/discovery/v2/events/{id}' 
+    payload = {'apikey': API_KEY} 
 
-    return render_template('event-details.html')
+    res = requests.get(url, params=payload) 
+    data = res.json() 
+    # data_json = data.loads(data)
+
+    print('*'*20) 
+
+    name = data['name']
+    event_url = data['url']
+    image = data['images'][0]['url']
+    start_date = date.fromisoformat(data['dates']['start']['localDate']).strftime("%B %d, %Y") 
+    classifications = [classification['genre']['name'] for classification in data['classifications']] 
+    venues = [venue['name'] for venue in data['_embedded']['venues']] 
+
+    return render_template('event-details.html', name=name, event_url=event_url, image=image, start_date=start_date, classifications=classifications, venues=venues)
+
 
 
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=5002)
+
+
